@@ -6,26 +6,24 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
+
+// ===== DEBUG =====
+console.log("🚀 SERVER STARTING...");
 console.log("MONGO RAW:", JSON.stringify(process.env.MONGO_URI));
-// ===== GLOBAL ERROR CATCH (IMPORTANT FOR YOUR JOIN ERROR) =====
+console.log("PORT:", process.env.PORT);
+
+// ===== GLOBAL ERROR HANDLERS =====
 process.on('uncaughtException', (err) => {
-  console.log("🔥 UNCAUGHT EXCEPTION:");
-  console.log(err);
+  console.log("🔥 UNCAUGHT EXCEPTION:", err);
 });
 
 process.on('unhandledRejection', (err) => {
-  console.log("🔥 UNHANDLED REJECTION:");
-  console.log(err);
+  console.log("🔥 UNHANDLED REJECTION:", err);
 });
 
 // ===== MIDDLEWARE =====
 app.use(cors());
 app.use(express.json());
-
-// ===== DEBUG =====
-console.log("🚀 SERVER STARTING...");
-console.log("MONGO_URI EXISTS:", !!process.env.MONGO_URI);
-console.log("PORT:", process.env.PORT);
 
 // ===== ROUTES =====
 console.log("LOADING AUTH ROUTES...");
@@ -33,7 +31,7 @@ const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
 console.log("AUTH ROUTES LOADED");
 
-// ===== HEALTH CHECK =====
+// ===== HEALTH =====
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
@@ -41,17 +39,12 @@ app.get('/api/health', (req, res) => {
 // ===== MONGO CHECK =====
 if (!process.env.MONGO_URI) {
   console.error('❌ MONGO_URI missing');
-  process.exit(1);
 }
 
-// ===== CONNECT MONGODB =====
+// ===== CONNECT MONGO (ONLY ONCE) =====
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ MongoDB connected');
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB error:', err.message);
-  });
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.log('❌ MongoDB error:', err.message));
 
 // ===== START SERVER =====
 const PORT = process.env.PORT || 5000;
