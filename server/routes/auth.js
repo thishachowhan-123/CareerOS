@@ -5,6 +5,9 @@ const User = require('../models/User');
 const config = require('../config/db');
 const auth = require('../middleware/auth');
 
+// 🔥 DEBUG LINE (added)
+console.log("AUTH FILE RUNNING");
+
 router.post('/register', async (req, res) => {
   const { email, password, fullName } = req.body;
 
@@ -29,7 +32,11 @@ router.post('/register', async (req, res) => {
       }
     };
 
-    const token = jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.JWT_EXPIRE });
+    const token = jwt.sign(
+      payload,
+      config.JWT_SECRET,
+      { expiresIn: config.JWT_EXPIRE }
+    );
 
     res.json({
       token,
@@ -67,7 +74,11 @@ router.post('/login', async (req, res) => {
       }
     };
 
-    const token = jwt.sign(payload, config.JWT_SECRET, { expiresIn: config.JWT_EXPIRE });
+    const token = jwt.sign(
+      payload,
+      config.JWT_SECRET,
+      { expiresIn: config.JWT_EXPIRE }
+    );
 
     res.json({
       token,
