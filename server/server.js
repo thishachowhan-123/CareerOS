@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-
+console.log("MONGO RAW:", JSON.stringify(process.env.MONGO_URI));
 // ===== GLOBAL ERROR CATCH (IMPORTANT FOR YOUR JOIN ERROR) =====
 process.on('uncaughtException', (err) => {
   console.log("🔥 UNCAUGHT EXCEPTION:");
